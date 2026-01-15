@@ -1,0 +1,11 @@
+.category{
+    width: 300px;
+    cursor: pointer;
+    transition: 150ms ease;
+
+}
+
+.category:hover{
+    background-color: rgb(100, 214, 223);
+    transform: scale(1.05);
+}
