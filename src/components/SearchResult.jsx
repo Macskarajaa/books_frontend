@@ -1,14 +1,17 @@
-import { Flex, Loader, Notification, Title } from '@mantine/core'
+import { Box, Flex, Loader, Notification, Title } from '@mantine/core'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { getBooksBySearchedText } from '../../utils'
 import { IconX } from '@tabler/icons-react'
+import { MyCard } from './MyCard'
 
 export const SearchResult = () => {
     const {txt} = useParams()
     const{ isLoading, status, data, error, isError} = useQuery({queryKey: ['booksbytitle',txt], queryFn:getBooksBySearchedText})
     const xIcon = <IconX size={20} />;
+     data && console.log(data.data);
+    
 
   return (
     <Flex 
@@ -24,7 +27,7 @@ export const SearchResult = () => {
             {data && <Title>A keresett könyvcím/könyvcím részlet: {txt}</Title> }
             
 
-            {data && data.data.lenght>0 ? data.data.map(obj=>
+            {(data && data.data.length>0)? data.data.map(obj=>
                                         <Box  key={obj.id}>
                                             <MyCard {...obj}/>
                                         </Box>
