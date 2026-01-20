@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Flex, Modal, ScrollArea, Table } from '@mantine/core';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { createBook, readBooks } from '../../utils';
+import { createBook, deleteBook, readBooks } from '../../utils';
 import { FaTrashAlt } from "react-icons/fa";
 import { TiPencil } from "react-icons/ti";
 import { TextInput} from '@mantine/core';
@@ -12,6 +12,7 @@ export const Dashboard = () => {
  const [books, setBooks] = useState([])
  const [showForm, setShowForm] =useState(false)
  const [newBook, setNewBook] = useState({title:'', author:'', description:''})
+ const [editingBook, setEditingBook] = useState(null)
 
 
  useEffect(()=>{
@@ -19,6 +20,27 @@ export const Dashboard = () => {
  },[])
 
  console.log(books);
+
+ const handleDelete= async(id)=>{
+  console.log(id);
+  
+  try {
+    const response=await deleteBook(id)
+    alert(response?.msg)
+    setBooks(prev=>prev.filter(obj=>obj.id!=id))
+  } catch (error) {
+    console.log(error);
+    alert(error.message)
+    
+  }
+  
+ }
+
+ const handleEdit = (book)=>{
+    setEditingBook(book)
+    setNewBook(book)
+    setShowForm(true)
+ }
  
 
  const rows = books.map((obj) => (
@@ -28,8 +50,8 @@ export const Dashboard = () => {
       <Table.Td>{obj.description}</Table.Td>
       <Table.Td>{obj.rating}⭐</Table.Td>
       <Table.Td>
-        <FaTrashAlt size="20px" color='red'/>
-        <TiPencil size="20px" color='blue' />
+        <FaTrashAlt size="20px" color='red' style={{cursor:"pointer"}} onClick={()=>handleDelete(obj.id)}/>
+        <TiPencil size="20px" color='blue' style={{cursor:"pointer"}} onClick={()=>handleEdit(obj.id)}/>
         </Table.Td>
     </Table.Tr>
 
@@ -40,6 +62,10 @@ export const Dashboard = () => {
     }
     const handleSave=async()=>{
             try {
+              if(editingBook){
+                console.log("change");
+                
+              }
                 const booktoSave={...newBook,category_id:1}
                 const savedBook=await createBook(booktoSave)
                 setBooks((prev)=>[...prev,savedBook])
